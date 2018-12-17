@@ -16,9 +16,9 @@
  */
 package es.usc.citius.hipster.graph;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.junit.BeforeClass;
+import es.usc.citius.hipster.util.Function;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,35 +26,61 @@ import static org.junit.Assert.*;
  * @author jlopezg8
  */
 public class HipsterGraphsTest {
-    static HipsterGraph<Character, Double> graph;
-    static Map<Character, Integer> verticesIndices;
-    
-    @BeforeClass
-    public static void setUpClass() {
-        graph = GraphBuilder.<Character, Double>create()
-                .connect('A').to('C').withEdge(-2d)
-                .connect('B').to('A').withEdge(4d)
-                .connect('B').to('C').withEdge(3d)
-                .connect('C').to('D').withEdge(2d)
-                .connect('D').to('B').withEdge(-1d)
-                .createDirectedGraph();
-        
-        verticesIndices = new HashMap<>();
-        for (char c = 'A', i = 0; c <= 'D'; c++, i++) {
-            verticesIndices.put(c, (int) i);
+    // 'A': 0, 'B': 1, ..., 'Z': 26
+    static Function<Character, Integer> vertexToIndex = new Function<Character, Integer>() {
+        @Override
+        public Integer apply(Character vertex) {
+            char letter = vertex;
+            return ('A' <= letter && letter <= 'Z')? letter - 'A' : -1;
         }
-    }
-    
+    };
+
     @Test
-    public void testGetAdjacencyMatrix() {
-        double[][] expResult = new double[][] {
-            { 0,  0, -2,  0},
-            { 4,  0,  3,  0},
-            { 0,  0,  0,  2},
-            { 0, -1,  0,  0}
+    public void testGetAdjacencyMatrix1() {
+        HipsterGraph<Character, Double> graph = GraphBuilder.<Character, Double>create()
+                .connect('A').to('B').withEdge(2d)
+                .connect('A').to('C').withEdge(-1d)
+                .connect('B').to('C').withEdge(-2d)
+                .createUndirectedGraph();
+        double[][] adjacencies = new double[][] {
+            // A   B   C
+            {  0,  2, -1 }, // A
+            {  2,  0, -2 }, // B
+            { -1, -2,  0 }  // C
         };
-        double[][] result = HipsterGraphs.getAdjacencyMatrix(
-                graph, verticesIndices);
-        assertArrayEquals(expResult, result);
+        List<List<Double>> expResult = matrixToList(adjacencies);
+        List<List<Double>> result = HipsterGraphs.getAdjacencyMatrix(
+                graph, 0d, vertexToIndex);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetAdjacencyMatrix2() {
+        HipsterGraph<Character, Double> graph = GraphBuilder.<Character, Double>create()
+                .connect('A').to('A').withEdge(-2d)
+                .connect('A').to('B').withEdge(-1d)
+                .connect('B').to('A').withEdge(3d)
+                .createDirectedGraph();
+        double[][] adjacencies = new double[][] {
+            // A   B
+            { -2, -1 }, // A
+            {  3,  0 }  // B
+        };
+        List<List<Double>> expResult = matrixToList(adjacencies);
+        List<List<Double>> result = HipsterGraphs.getAdjacencyMatrix(
+                graph, 0d, vertexToIndex);
+        assertEquals(expResult, result);
+    }
+
+    static List<List<Double>> matrixToList(double[][] matrix) {
+        List<List<Double>> list = new ArrayList<>(matrix.length);
+        for (double[] matrixRow : matrix) {
+            List<Double> listRow = new ArrayList<>(matrixRow.length);
+            for (double e : matrixRow) {
+                listRow.add(e);
+            }
+            list.add(listRow);
+        }
+        return list;
     }
 }
