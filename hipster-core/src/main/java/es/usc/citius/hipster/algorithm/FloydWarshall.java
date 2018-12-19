@@ -33,10 +33,13 @@ import java.util.Map;
  * Wikipedia article</a> for more information.
  * <p>
  * This class does not subclass {@link Algorithm}, mainly because classes that
- * do aim to be graph-agnostic, and expect a single initial state, while the
- * Floyd-Warshall algorithm is inherently graph-centric (since it works with the
- * graph's adjacency matrix) and does not expect a single initial state (since
- * all states would be considered initial).
+ * do aim to be graph-agnostic, and are framed around <b>progressively</b>
+ * exploring the state space from a <b>single</b> initial state until reaching
+ * any of several goal states; while the Floyd-Warshall algorithm is inherently
+ * graph-centric, since it works with the graph's adjacency matrix (and thus the
+ * <b>fully explored</b> state space), and does not expect a <b>single</b>
+ * initial state or any goal states, since all states would be considered
+ * initial and goal states.
  *
  * @author jlopezg8
  */
