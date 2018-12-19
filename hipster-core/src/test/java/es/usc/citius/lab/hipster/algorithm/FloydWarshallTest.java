@@ -144,9 +144,9 @@ public class FloydWarshallTest {
     }
 
     static List<List<Character>> matrixToList(char[][] matrix) {
-        List<List<Character>> list = new ArrayList<>(matrix.length);
+        List<List<Character>> list = new ArrayList<List<Character>>(matrix.length);
         for (char[] matrixRow : matrix) {
-            List<Character> listRow = new ArrayList<>(matrixRow.length);
+            List<Character> listRow = new ArrayList<Character>(matrixRow.length);
             for (char e : matrixRow) {
                 // 0 → null only so null successors can be tested
                 listRow.add(e != 0? e : null);
@@ -157,9 +157,9 @@ public class FloydWarshallTest {
     }
 
     static List<List<Double>> matrixToList(double[][] matrix) {
-        List<List<Double>> list = new ArrayList<>(matrix.length);
+        List<List<Double>> list = new ArrayList<List<Double>>(matrix.length);
         for (double[] matrixRow : matrix) {
-            List<Double> listRow = new ArrayList<>(matrixRow.length);
+            List<Double> listRow = new ArrayList<Double>(matrixRow.length);
             for (double e : matrixRow) {
                 listRow.add(e);
             }
@@ -169,9 +169,9 @@ public class FloydWarshallTest {
     }
 
     static List<List<Integer>> matrixToList(int[][] matrix) {
-        List<List<Integer>> list = new ArrayList<>(matrix.length);
+        List<List<Integer>> list = new ArrayList<List<Integer>>(matrix.length);
         for (int[] matrixRow : matrix) {
-            List<Integer> listRow = new ArrayList<>(matrixRow.length);
+            List<Integer> listRow = new ArrayList<Integer>(matrixRow.length);
             for (int e : matrixRow) {
                 listRow.add(e);
             }

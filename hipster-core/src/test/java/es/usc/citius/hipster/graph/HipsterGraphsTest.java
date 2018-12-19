@@ -73,9 +73,9 @@ public class HipsterGraphsTest {
     }
 
     static List<List<Double>> matrixToList(double[][] matrix) {
-        List<List<Double>> list = new ArrayList<>(matrix.length);
+        List<List<Double>> list = new ArrayList<List<Double>>(matrix.length);
         for (double[] matrixRow : matrix) {
-            List<Double> listRow = new ArrayList<>(matrixRow.length);
+            List<Double> listRow = new ArrayList<Double>(matrixRow.length);
             for (double e : matrixRow) {
                 listRow.add(e);
             }

@@ -48,7 +48,7 @@ public class HipsterGraphs {
     public static <V, E> List<List<E>> getAdjacencyMatrix(
             HipsterGraph<V, E> graph, E zero)
     {
-        final Map<V, Integer> verticesIndices = new HashMap<>();
+        final Map<V, Integer> verticesIndices = new HashMap<V, Integer>();
         int nVertices = 0;
         for (V vertex : graph.vertices()) {
             verticesIndices.put(vertex, nVertices++);
@@ -85,9 +85,9 @@ public class HipsterGraphs {
             HipsterGraph<V, E> graph, E zero, Function<V, Integer> vertexToIndex)
     {
         int nVertices = getNumVertices(graph);
-        List<List<E>> adjacencies = new ArrayList<>(nVertices);
+        List<List<E>> adjacencies = new ArrayList<List<E>>(nVertices);
         for (int i = 0; i < nVertices; i++) {
-            ArrayList<E> adjacenciesRow = new ArrayList<>(nVertices);
+            ArrayList<E> adjacenciesRow = new ArrayList<E>(nVertices);
             for (int j = 0; j < nVertices; j++) {
                 adjacenciesRow.add(zero);
             }

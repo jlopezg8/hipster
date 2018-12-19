@@ -186,7 +186,7 @@ public class FloydWarshall {
                 return Collections.emptyList();
             }
 
-            List<V> path = new ArrayList<>();
+            List<V> path = new ArrayList<V>();
             path.add(start);
             while (!start.equals(end)) {
                 start = successors.get(startIndex).get(endIndex);
@@ -216,8 +216,8 @@ public class FloydWarshall {
     {
         // could really use a bidirectional map (index ↔ vertex), but would
         // need a dependency like Guava
-        List<V> vertices = new ArrayList<>();
-        final Map<V, Integer> verticesIndices = new HashMap<>();
+        List<V> vertices = new ArrayList<V>();
+        final Map<V, Integer> verticesIndices = new HashMap<V, Integer>();
         int nVertices = 0;
         for (V vertex : graph.vertices()) {
             vertices.add(vertex);
@@ -233,11 +233,11 @@ public class FloydWarshall {
         E zero = op.getIdentityElem(), inf = op.getMaxElem();
         List<List<E>> adjacencies = HipsterGraphs.getAdjacencyMatrix(
                 graph, zero, vertexToIndex);
-        List<List<E>> distances = new ArrayList<>(nVertices);
-        List<List<V>> successors = new ArrayList<>(nVertices);
+        List<List<E>> distances = new ArrayList<List<E>>(nVertices);
+        List<List<V>> successors = new ArrayList<List<V>>(nVertices);
         for (int i = 0; i < nVertices; i++) {
-            ArrayList<E> distancesRow = new ArrayList<>(nVertices);
-            ArrayList<V> successorsRow = new ArrayList<>(nVertices);
+            ArrayList<E> distancesRow = new ArrayList<E>(nVertices);
+            ArrayList<V> successorsRow = new ArrayList<V>(nVertices);
             for (int j = 0; j < nVertices; j++) {
                 E weight = adjacencies.get(i).get(j);
                 boolean connected;
@@ -277,7 +277,7 @@ public class FloydWarshall {
             }
         }
 
-        return new Result<>(distances, successors, vertexToIndex, op);
+        return new Result<V, E>(distances, successors, vertexToIndex, op);
     }
 
     /**
