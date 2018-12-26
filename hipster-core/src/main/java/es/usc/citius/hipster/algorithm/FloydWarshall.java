@@ -33,13 +33,14 @@ import java.util.Map;
  * Wikipedia article</a> for more information.
  * <p>
  * This class does not subclass {@link Algorithm}, mainly because classes that
- * do aim to be graph-agnostic, and are framed around <b>progressively</b>
- * exploring the state space from a <b>single</b> initial state until reaching
- * any of several goal states; while the Floyd-Warshall algorithm is inherently
- * graph-centric, since it works with the graph's adjacency matrix (and thus the
- * <b>fully explored</b> state space), and does not expect a <b>single</b>
- * initial state or any goal states, since all states would be considered
- * initial and goal states.
+ * do (and the library as a whole) aim to be <em>graph-agnostic</em>, and are
+ * framed around <em>progressively</em> exploring the state space from a
+ * <em>single</em> initial state until reaching any of several goal states;
+ * while the Floyd-Warshall algorithm is inherently <em>graph-centric</em>,
+ * since it works with the graph's adjacency matrix (and thus the <em>fully
+ * explored</em> state space), and does not expect a <em>single</em> initial
+ * state, a node expander, nor any goal states, since all states would be
+ * considered initial and goal states.
  *
  * @author jlopezg8
  */
@@ -48,7 +49,7 @@ public class FloydWarshall {
      * Contains the outputs of a run of the Floyd-Warshall algorithm on a graph.
      * These consist of the distance matrix, which holds the costs of the
      * shortest paths between any two vertices of the graph, the successor
-     * matrix, used to construct the respective paths, a map from vertex to
+     * matrix, used to construct the respective paths, a function from vertex to
      * its respective index on the previous two matrices, and the {@link
      * es.usc.citius.hipster.model.function.impl.BinaryOperation} used to add
      * costs and represent the non-existence of paths.
@@ -231,6 +232,9 @@ public class FloydWarshall {
         };
 
         E zero = op.getIdentityElem(), inf = op.getMaxElem();
+        // TODO: maybe instead of lists of lists, use flat lists, index by
+        // i * nVertices + j [and return as lists of lists?] for better locality
+        // of reference and perhaps better performance
         List<List<E>> adjacencies = HipsterGraphs.getAdjacencyMatrix(
                 graph, zero, vertexToIndex);
         List<List<E>> distances = new ArrayList<List<E>>(nVertices);
@@ -260,15 +264,19 @@ public class FloydWarshall {
 
         for (int i = 0; i < nVertices; i++) {
             for (int j = 0; j < nVertices; j++) {
+                E d_ji = distances.get(j).get(i);
+                if (d_ji.compareTo(inf) >= 0) {
+                    continue;
+                }
                 for (int k = 0; k < nVertices; k++) {
                     E d_ik = distances.get(i).get(k);
-                    E d_ji = distances.get(j).get(i);
-                    if (d_ik.compareTo(inf) < 0 && d_ji.compareTo(inf) < 0) {
-                        E sum = op.apply(d_ik, d_ji);
-                        if (sum.compareTo(distances.get(j).get(k)) < 0) {
-                            distances.get(j).set(k, sum);
-                            successors.get(j).set(k, successors.get(j).get(i));
-                        }
+                    if (d_ik.compareTo(inf) >= 0) {
+                        continue;
+                    }
+                    E sum = op.apply(d_ik, d_ji);
+                    if (sum.compareTo(distances.get(j).get(k)) < 0) {
+                        distances.get(j).set(k, sum);
+                        successors.get(j).set(k, successors.get(j).get(i));
                     }
                 }
                 if (distances.get(j).get(j).compareTo(zero) < 0) {
